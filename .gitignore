@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# Node
+node_modules/
+.next/
+next-env.d.ts
+*.tsbuildinfo
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Eval output
+evals/results/*
+!evals/results/baseline.json
+
+# OS
+.DS_Store
+
+# Claude Code project config is shared; personal notes are not.
+.claude/notes/
+
+# Production secrets
+.env.prod*
+ 

@@ -1,0 +1,87 @@
+# The whole stack on one machine. Suits any VM with a couple of cores:
+# an Oracle Cloud Always Free instance, a VPS, or an Azure VM.
+#
+#   cp .env.prod.example .env.prod   # then fill it in
+#   docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
+#
+# Postgres and Redis stay on the internal network; only web and api are
+# published, because nothing outside the box should reach the database.
+#
+# The project name is explicit so production volumes never collide with
+# the development ones: both files live in this directory, Compose would
+# otherwise derive the same project name for each, and Postgres only
+# applies POSTGRES_PASSWORD when it initialises an empty volume — so the
+# second stack silently inherits the first one's credentials.
+name: repo-scout-prod
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-scout}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env.prod}
+      POSTGRES_DB: ${POSTGRES_DB:-repo_scout}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-scout}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    # Queue state is rebuildable, but losing it mid-run strands a job, so
+    # keep the volume rather than running purely in memory.
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  api:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-scout}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-repo_scout}
+      REDIS_URL: redis://redis:6379/0
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
+      ALLOWED_ORIGINS: ${PUBLIC_WEB_URL}
+    ports:
+      - "${API_PORT:-8000}:8000"
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis: {condition: service_healthy}
+    restart: unless-stopped
+
+  worker:
+    build: ./backend
+    command: ["python", "-m", "worker.main"]
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-scout}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-repo_scout}
+      REDIS_URL: redis://redis:6379/0
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis: {condition: service_healthy}
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./web
+      args:
+        # Compiled into the browser bundle, so this is the address a
+        # visitor's browser uses — not an internal service name.
+        NEXT_PUBLIC_API_URL: ${PUBLIC_API_URL}
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:

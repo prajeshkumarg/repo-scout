@@ -1,0 +1,43 @@
+# 20 questions for pallets/click, ground-truth files verified against the
+# pinned SHA (36baa15f). Each file in `files` genuinely answers the question.
+questions:
+  - question: "where is the Command class defined"
+    files: ["src/click/core.py"]
+  - question: "how does click handle option parsing"
+    files: ["src/click/parser.py"]
+  - question: "where is the decorator that makes a command"
+    files: ["src/click/decorators.py"]
+  - question: "how does echo print output to the terminal"
+    files: ["src/click/utils.py"]
+  - question: "how are terminal colors and styles handled"
+    files: ["src/click/termui.py"]
+  - question: "how does click prompt the user for missing parameter values"
+    files: ["src/click/core.py"]
+  - question: "where are the exception types defined"
+    files: ["src/click/exceptions.py"]
+  - question: "how does click wrap and format help text"
+    files: ["src/click/formatting.py"]
+  - question: "how does click test command line applications with CliRunner"
+    files: ["src/click/testing.py"]
+  - question: "how does shell completion work"
+    files: ["src/click/shell_completion.py"]
+  - question: "how are Choice parameters validated"
+    files: ["src/click/types.py"]
+  - question: "how does click convert command line values into python types"
+    files: ["src/click/types.py"]
+  - question: "how does click implement command groups and chaining"
+    files: ["src/click/core.py"]
+  - question: "how does click handle binary stdin and stdout streams"
+    files: ["src/click/_compat.py"]
+  - question: "how is the progress bar implemented"
+    files: ["src/click/_termui_impl.py"]
+  - question: "how does click confirm destructive actions with the user"
+    files: ["src/click/termui.py"]
+  - question: "what does the Context object track"
+    files: ["src/click/core.py"]
+  - question: "how does click launch an external editor"
+    files: ["src/click/_termui_impl.py"]
+  - question: "how does click handle windows console encoding quirks"
+    files: ["src/click/_winconsole.py"]
+  - question: "how are parameter values resolved from environment variables"
+    files: ["src/click/core.py"]

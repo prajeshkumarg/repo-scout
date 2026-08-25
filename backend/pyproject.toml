@@ -1,0 +1,50 @@
+[project]
+name = "repo-scout-backend"
+version = "0.1.0"
+description = "repo-scout backend: API, indexing worker, and agent."
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "pydantic-settings>=2.6",
+    "psycopg[binary]>=3.2",
+    "redis>=5.2",
+    "rq>=2.11.0",
+    # tree-sitter 0.26.0 corrupts trees produced by the current grammar
+    # wheels (0.25-era): node reads return garbage line numbers and
+    # segfaults. Pin the runtime to the era the grammars were built for.
+    "tree-sitter>=0.25,<0.26",
+    "tree-sitter-python==0.25.0",
+    "tree-sitter-typescript>=0.23.2",
+    "pgvector>=0.5.0",
+    "fastembed>=0.8.0",
+    "pyyaml>=6.0.3",
+    "google-genai>=2.22.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "httpx2>=2.12",
+    "ruff>=0.8",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+# Fixtures are test data: unused imports and broken syntax are deliberate,
+# they are what the chunker tests feed on.
+exclude = ["tests/fixtures"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "ANN", "T20"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["ANN"]
+# CLI results are program output, not logging.
+"search/__main__.py" = ["T201"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

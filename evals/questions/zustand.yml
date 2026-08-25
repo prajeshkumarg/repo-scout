@@ -1,0 +1,43 @@
+# 20 questions for pmndrs/zustand, ground-truth files verified against the
+# pinned SHA (b57db4f8). Each file in `files` genuinely answers the question.
+questions:
+  - question: "where is createStore implemented"
+    files: ["src/vanilla.ts"]
+  - question: "how does the React useStore hook work"
+    files: ["src/react.ts"]
+  - question: "how does the create function wire up a store"
+    files: ["src/react.ts"]
+  - question: "how does the persist middleware work"
+    files: ["src/middleware/persist.ts"]
+  - question: "how does the devtools middleware work"
+    files: ["src/middleware/devtools.ts"]
+  - question: "how does the immer middleware work"
+    files: ["src/middleware/immer.ts"]
+  - question: "how does zustand support redux-style reducers"
+    files: ["src/middleware/redux.ts"]
+  - question: "how does subscribeWithSelector work"
+    files: ["src/middleware/subscribeWithSelector.ts"]
+  - question: "how does shallow equality comparison work"
+    files: ["src/shallow.ts"]
+  - question: "what does the zustand/traditional entry provide"
+    files: ["src/traditional.ts"]
+  - question: "how is the vanilla StoreApi type defined"
+    files: ["src/vanilla.ts"]
+  - question: "how does the useShallow hook work"
+    files: ["src/react/shallow.ts"]
+  - question: "how does the combine middleware work"
+    files: ["src/middleware/combine.ts"]
+  - question: "how does the ssrSafe helper work"
+    files: ["src/middleware/ssrSafe.ts"]
+  - question: "how does the vanilla store subscribe method work"
+    files: ["src/vanilla.ts"]
+  - question: "how does createJSONStorage work"
+    files: ["src/middleware/persist.ts"]
+  - question: "how does the vanilla shallow helper work"
+    files: ["src/vanilla/shallow.ts"]
+  - question: "what does the middleware module re-export"
+    files: ["src/middleware.ts"]
+  - question: "how does useStore support custom equality functions"
+    files: ["src/react.ts"]
+  - question: "how does zustand integrate with useSyncExternalStore"
+    files: ["src/react.ts"]

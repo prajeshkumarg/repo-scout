@@ -1,0 +1,43 @@
+# 20 questions for psf/requests, ground-truth files verified against the
+# pinned SHA (dae7ef63). Each file in `files` genuinely answers the question.
+questions:
+  - question: "how does requests.get work"
+    files: ["src/requests/api.py"]
+  - question: "how does a session keep cookies across requests"
+    files: ["src/requests/sessions.py"]
+  - question: "how does the http adapter do connection pooling"
+    files: ["src/requests/adapters.py"]
+  - question: "how does requests parse json responses"
+    files: ["src/requests/models.py"]
+  - question: "how does requests handle redirects"
+    files: ["src/requests/sessions.py"]
+  - question: "how does basic auth work"
+    files: ["src/requests/auth.py"]
+  - question: "how does requests prepare a request before sending it"
+    files: ["src/requests/models.py"]
+  - question: "how does requests handle retries"
+    files: ["src/requests/adapters.py"]
+  - question: "how does the cookie jar work"
+    files: ["src/requests/cookies.py"]
+  - question: "where are the exception types defined"
+    files: ["src/requests/exceptions.py"]
+  - question: "how does requests handle timeouts"
+    files: ["src/requests/adapters.py"]
+  - question: "how does requests verify ssl certificates"
+    files: ["src/requests/sessions.py"]
+  - question: "how does requests pick up proxy settings from the environment"
+    files: ["src/requests/sessions.py", "src/requests/utils.py"]
+  - question: "how does iter_content stream large downloads"
+    files: ["src/requests/models.py"]
+  - question: "how does requests encode form data in urls"
+    files: ["src/requests/models.py"]
+  - question: "how does requests guess a response's encoding"
+    files: ["src/requests/utils.py"]
+  - question: "how does requests keep track of redirect history"
+    files: ["src/requests/models.py"]
+  - question: "how does requests parse link headers"
+    files: ["src/requests/utils.py"]
+  - question: "how does requests build default headers like user-agent"
+    files: ["src/requests/utils.py"]
+  - question: "how does requests handle case-insensitive response headers"
+    files: ["src/requests/structures.py"]

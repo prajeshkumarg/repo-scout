@@ -1,0 +1,797 @@
+{
+  "recorded_at": "2026-09-03T00:37:13.658523+00:00",
+  "generated_at": "2026-09-03T00:37:13.658523+00:00",
+  "model": "BAAI/bge-small-en-v1.5",
+  "k": 10,
+  "overall_recall": 0.9166666666666666,
+  "repos": [
+    {
+      "owner": "pallets",
+      "name": "click",
+      "sha": "36baa15ff831b939a22bc527cd76ce653ef6f66d",
+      "recall": 0.95,
+      "questions": [
+        {
+          "question": "where is the Command class defined",
+          "recall": 1.0,
+          "hit_files": [
+            "src/click/core.py",
+            "src/click/decorators.py",
+            "tests/test_command_decorators.py",
+            "tests/test_custom_classes.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does click handle option parsing",
+          "recall": 1.0,
+          "hit_files": [
+            "src/click/core.py",
+            "src/click/exceptions.py",
+            "src/click/parser.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "where is the decorator that makes a command",
+          "recall": 1.0,
+          "hit_files": [
+            "examples/complex/complex/cli.py",
+            "src/click/core.py",
+            "src/click/decorators.py",
+            "tests/test_context.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does echo print output to the terminal",
+          "recall": 1.0,
+          "hit_files": [
+            "examples/completion/completion.py",
+            "examples/inout/inout.py",
+            "src/click/testing.py",
+            "src/click/utils.py",
+            "tests/test_basic.py",
+            "tests/test_testing.py",
+            "tests/test_utils/test_echo.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how are terminal colors and styles handled",
+          "recall": 1.0,
+          "hit_files": [
+            "examples/colors/colors.py",
+            "examples/termui/termui.py",
+            "src/click/_termui_impl.py",
+            "src/click/termui.py",
+            "tests/test_termui.py",
+            "tests/test_testing.py",
+            "tests/test_utils/test_echo.py",
+            "tests/test_utils/test_style.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does click prompt the user for missing parameter values",
+          "recall": 1.0,
+          "hit_files": [
+            "src/click/core.py",
+            "src/click/termui.py",
+            "src/click/types.py",
+            "tests/test_arguments.py",
+            "tests/test_basic.py",
+            "tests/test_options.py",
+            "tests/test_termui.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "where are the exception types defined",
+          "recall": 1.0,
+          "hit_files": [
+            "src/click/core.py",
+            "src/click/exceptions.py",
+            "src/click/types.py",
+            "tests/test_context.py",
+            "tests/test_testing.py",
+            "tests/test_types.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does click wrap and format help text",
+          "recall": 1.0,
+          "hit_files": [
+            "src/click/_textwrap.py",
+            "src/click/core.py",
+            "src/click/decorators.py",
+            "src/click/formatting.py",
+            "tests/test_formatting.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does click test command line applications with CliRunner",
+          "recall": 0.0,
+          "hit_files": [
+            "tests/test_arguments.py",
+            "tests/test_command_decorators.py",
+            "tests/test_commands.py",
+            "tests/test_testing.py"
+          ],
+          "missing": [
+            "src/click/testing.py"
+          ]
+        },
+        {
+          "question": "how does shell completion work",
+          "recall": 1.0,
+          "hit_files": [
+            "src/click/core.py",
+            "src/click/shell_completion.py",
+            "src/click/types.py",
+            "tests/test_shell_completion.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how are Choice parameters validated",
+          "recall": 1.0,
+          "hit_files": [
+            "examples/validation/validation.py",
+            "src/click/types.py",
+            "tests/test_basic.py",
+            "tests/test_options.py",
+            "tests/test_shell_completion.py",
+            "tests/test_types.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does click convert command line values into python types",
+          "recall": 1.0,
+          "hit_files": [
+            "src/click/_winconsole.py",
+            "src/click/types.py",
+            "tests/test_options.py",
+            "tests/test_utils/test_prompt.py",
+            "tests/typing/typing_help_option.py",
+            "tests/typing/typing_options.py",
+            "tests/typing/typing_prompt.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does click implement command groups and chaining",
+          "recall": 1.0,
+          "hit_files": [
+            "examples/completion/completion.py",
+            "src/click/__init__.py",
+            "src/click/core.py",
+            "tests/test_basic.py",
+            "tests/test_chain.py",
+            "tests/test_commands.py",
+            "tests/typing/typing_aliased_group.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does click handle binary stdin and stdout streams",
+          "recall": 1.0,
+          "hit_files": [
+            "src/click/_compat.py",
+            "src/click/_winconsole.py",
+            "src/click/testing.py",
+            "src/click/utils.py",
+            "tests/test_testing.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how is the progress bar implemented",
+          "recall": 1.0,
+          "hit_files": [
+            "examples/termui/termui.py",
+            "src/click/_termui_impl.py",
+            "src/click/termui.py",
+            "tests/test_termui.py",
+            "tests/typing/typing_progressbar.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does click confirm destructive actions with the user",
+          "recall": 1.0,
+          "hit_files": [
+            "src/click/core.py",
+            "src/click/decorators.py",
+            "src/click/parser.py",
+            "src/click/termui.py",
+            "tests/test_utils/test_confirm.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "what does the Context object track",
+          "recall": 1.0,
+          "hit_files": [
+            "src/click/core.py",
+            "src/click/globals.py",
+            "tests/test_context.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does click launch an external editor",
+          "recall": 1.0,
+          "hit_files": [
+            "examples/termui/termui.py",
+            "src/click/_termui_impl.py",
+            "src/click/core.py",
+            "src/click/termui.py",
+            "tests/test_compat.py",
+            "tests/test_termui.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does click handle windows console encoding quirks",
+          "recall": 1.0,
+          "hit_files": [
+            "src/click/_compat.py",
+            "src/click/_termui_impl.py",
+            "src/click/_winconsole.py",
+            "src/click/types.py",
+            "tests/test_compat.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how are parameter values resolved from environment variables",
+          "recall": 1.0,
+          "hit_files": [
+            "examples/completion/completion.py",
+            "src/click/core.py",
+            "tests/test_context.py"
+          ],
+          "missing": []
+        }
+      ]
+    },
+    {
+      "owner": "pmndrs",
+      "name": "zustand",
+      "sha": "b57db4f86ef179285da216eeb291266da82c361c",
+      "recall": 0.85,
+      "questions": [
+        {
+          "question": "where is createStore implemented",
+          "recall": 1.0,
+          "hit_files": [
+            "src/middleware/persist.ts",
+            "src/react.ts",
+            "src/vanilla.ts",
+            "tests/devtools.test.tsx",
+            "tests/persistAsync.test.tsx",
+            "tests/persistSync.test.tsx",
+            "tests/types.test.tsx",
+            "tests/vanilla/basic.test.ts"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does the React useStore hook work",
+          "recall": 1.0,
+          "hit_files": [
+            "examples/starter/src/index.tsx",
+            "src/react.ts",
+            "src/traditional.ts",
+            "tests/basic.test.tsx",
+            "tests/vanilla/basic.test.ts"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does the create function wire up a store",
+          "recall": 1.0,
+          "hit_files": [
+            "examples/demo/src/App.jsx",
+            "examples/demo/src/resources/typescript-code.js",
+            "examples/starter/src/index.tsx",
+            "src/middleware/devtools.ts",
+            "src/react.ts",
+            "src/vanilla.ts",
+            "tests/devtools.test.tsx",
+            "tests/vanilla/basic.test.ts"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does the persist middleware work",
+          "recall": 1.0,
+          "hit_files": [
+            "src/middleware/persist.ts",
+            "tests/persistAsync.test.tsx",
+            "tests/persistSync.test.tsx"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does the devtools middleware work",
+          "recall": 1.0,
+          "hit_files": [
+            "src/middleware.ts",
+            "src/middleware/devtools.ts",
+            "tests/devtools.test.tsx",
+            "tests/middlewareTypes.test.tsx"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does the immer middleware work",
+          "recall": 1.0,
+          "hit_files": [
+            "src/middleware/immer.ts",
+            "src/middleware/subscribeWithSelector.ts",
+            "tests/devtools.test.tsx",
+            "tests/immer.test.tsx",
+            "tests/middlewareTypes.test.tsx",
+            "tests/subscribe.test.tsx",
+            "tests/vanilla/subscribe.test.tsx"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does zustand support redux-style reducers",
+          "recall": 1.0,
+          "hit_files": [
+            "examples/demo/src/App.jsx",
+            "examples/starter/src/index.tsx",
+            "src/middleware/devtools.ts",
+            "src/middleware/redux.ts",
+            "src/middleware/ssrSafe.ts",
+            "tests/devtools.test.tsx",
+            "tests/middlewareTypes.test.tsx",
+            "tests/vanilla/shallow.test.tsx"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does subscribeWithSelector work",
+          "recall": 1.0,
+          "hit_files": [
+            "examples/demo/src/App.jsx",
+            "src/middleware/subscribeWithSelector.ts",
+            "tests/devtools.test.tsx",
+            "tests/subscribe.test.tsx",
+            "tests/vanilla/subscribe.test.tsx"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does shallow equality comparison work",
+          "recall": 0.0,
+          "hit_files": [
+            "src/traditional.ts",
+            "src/vanilla/shallow.ts",
+            "tests/shallow.test.tsx",
+            "tests/test_options.py",
+            "tests/vanilla/shallow.test.tsx"
+          ],
+          "missing": [
+            "src/shallow.ts"
+          ]
+        },
+        {
+          "question": "what does the zustand/traditional entry provide",
+          "recall": 0.0,
+          "hit_files": [
+            "examples/demo/src/App.jsx",
+            "examples/demo/src/components/Details.jsx",
+            "examples/demo/src/resources/javascript-code.js",
+            "examples/demo/src/resources/typescript-code.js",
+            "examples/starter/src/index.tsx",
+            "tests/devtools.test.tsx",
+            "tests/immer.test.tsx",
+            "tests/middlewareTypes.test.tsx",
+            "tests/types.test.tsx"
+          ],
+          "missing": [
+            "src/traditional.ts"
+          ]
+        },
+        {
+          "question": "how is the vanilla StoreApi type defined",
+          "recall": 1.0,
+          "hit_files": [
+            "src/middleware/combine.ts",
+            "src/middleware/devtools.ts",
+            "src/middleware/persist.ts",
+            "src/react.ts",
+            "src/traditional.ts",
+            "src/vanilla.ts",
+            "tests/vanilla/basic.test.ts"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does the useShallow hook work",
+          "recall": 1.0,
+          "hit_files": [
+            "examples/demo/src/App.jsx",
+            "examples/demo/src/resources/javascript-code.js",
+            "examples/starter/src/index.tsx",
+            "src/click/_winconsole.py",
+            "src/click/utils.py",
+            "src/react/shallow.ts",
+            "tests/test_arguments.py",
+            "tests/test_termui.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does the combine middleware work",
+          "recall": 1.0,
+          "hit_files": [
+            "src/middleware/combine.ts",
+            "tests/devtools.test.tsx",
+            "tests/immer.test.tsx",
+            "tests/middlewareTypes.test.tsx",
+            "tests/vanilla/subscribe.test.tsx"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does the ssrSafe helper work",
+          "recall": 1.0,
+          "hit_files": [
+            "src/click/core.py",
+            "src/click/decorators.py",
+            "src/middleware/ssrSafe.ts",
+            "tests/ssr.test.tsx",
+            "tests/test_basic.py",
+            "tests/test_options.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does the vanilla store subscribe method work",
+          "recall": 1.0,
+          "hit_files": [
+            "examples/starter/src/index.tsx",
+            "src/middleware/persist.ts",
+            "src/middleware/subscribeWithSelector.ts",
+            "src/react.ts",
+            "src/traditional.ts",
+            "src/vanilla.ts",
+            "tests/devtools.test.tsx",
+            "tests/subscribe.test.tsx",
+            "tests/vanilla/basic.test.ts",
+            "tests/vanilla/subscribe.test.tsx"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does createJSONStorage work",
+          "recall": 1.0,
+          "hit_files": [
+            "examples/demo/src/App.jsx",
+            "src/middleware/persist.ts",
+            "src/vanilla.ts",
+            "tests/immer.test.tsx",
+            "tests/persistSync.test.tsx",
+            "tests/vanilla/basic.test.ts"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does the vanilla shallow helper work",
+          "recall": 1.0,
+          "hit_files": [
+            "src/click/core.py",
+            "src/react/shallow.ts",
+            "src/shallow.ts",
+            "src/vanilla/shallow.ts",
+            "tests/basic.test.tsx",
+            "tests/shallow.test.tsx",
+            "tests/vanilla/shallow.test.tsx"
+          ],
+          "missing": []
+        },
+        {
+          "question": "what does the middleware module re-export",
+          "recall": 1.0,
+          "hit_files": [
+            "src/index.ts",
+            "src/middleware.ts",
+            "src/middleware/combine.ts",
+            "src/middleware/devtools.ts",
+            "src/middleware/immer.ts",
+            "src/middleware/persist.ts",
+            "src/middleware/redux.ts",
+            "src/middleware/ssrSafe.ts",
+            "tests/persistSync.test.tsx"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does useStore support custom equality functions",
+          "recall": 1.0,
+          "hit_files": [
+            "src/react.ts",
+            "src/traditional.ts",
+            "tests/basic.test.tsx",
+            "tests/middlewareTypes.test.tsx"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does zustand integrate with useSyncExternalStore",
+          "recall": 0.0,
+          "hit_files": [
+            "examples/demo/src/App.jsx",
+            "examples/starter/src/index.tsx",
+            "src/traditional.ts",
+            "tests/basic.test.tsx",
+            "tests/devtools.test.tsx",
+            "tests/immer.test.tsx",
+            "tests/middlewareTypes.test.tsx",
+            "tests/persistAsync.test.tsx",
+            "tests/persistSync.test.tsx",
+            "tests/types.test.tsx"
+          ],
+          "missing": [
+            "src/react.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "owner": "psf",
+      "name": "requests",
+      "sha": "dae7ef63b4df6eded86637f251fc4e3a06c3b479",
+      "recall": 0.95,
+      "questions": [
+        {
+          "question": "how does requests.get work",
+          "recall": 1.0,
+          "hit_files": [
+            "src/requests/__init__.py",
+            "src/requests/__version__.py",
+            "src/requests/api.py",
+            "src/requests/sessions.py",
+            "tests/test_requests.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does a session keep cookies across requests",
+          "recall": 1.0,
+          "hit_files": [
+            "src/requests/cookies.py",
+            "src/requests/sessions.py",
+            "tests/test_requests.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does the http adapter do connection pooling",
+          "recall": 1.0,
+          "hit_files": [
+            "src/requests/adapters.py",
+            "src/requests/sessions.py",
+            "tests/test_requests.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does requests parse json responses",
+          "recall": 1.0,
+          "hit_files": [
+            "src/requests/__version__.py",
+            "src/requests/api.py",
+            "src/requests/models.py",
+            "tests/devtools.test.tsx",
+            "tests/test_requests.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does requests handle redirects",
+          "recall": 1.0,
+          "hit_files": [
+            "src/requests/api.py",
+            "src/requests/auth.py",
+            "src/requests/sessions.py",
+            "tests/test_lowlevel.py",
+            "tests/test_requests.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does basic auth work",
+          "recall": 1.0,
+          "hit_files": [
+            "src/requests/auth.py",
+            "src/requests/models.py",
+            "src/requests/utils.py",
+            "tests/test_requests.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does requests prepare a request before sending it",
+          "recall": 1.0,
+          "hit_files": [
+            "src/requests/adapters.py",
+            "src/requests/auth.py",
+            "src/requests/models.py",
+            "src/requests/sessions.py",
+            "tests/test_requests.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does requests handle retries",
+          "recall": 1.0,
+          "hit_files": [
+            "src/requests/__version__.py",
+            "src/requests/adapters.py",
+            "src/requests/api.py",
+            "src/requests/auth.py",
+            "src/requests/exceptions.py",
+            "src/requests/sessions.py",
+            "tests/test_requests.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does the cookie jar work",
+          "recall": 1.0,
+          "hit_files": [
+            "src/requests/cookies.py",
+            "tests/test_requests.py",
+            "tests/test_utils.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "where are the exception types defined",
+          "recall": 1.0,
+          "hit_files": [
+            "src/click/core.py",
+            "src/click/exceptions.py",
+            "src/click/types.py",
+            "src/middleware/devtools.ts",
+            "src/requests/exceptions.py",
+            "tests/test_context.py",
+            "tests/test_testing.py",
+            "tests/test_types.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does requests handle timeouts",
+          "recall": 1.0,
+          "hit_files": [
+            "src/requests/adapters.py",
+            "src/requests/exceptions.py",
+            "src/requests/sessions.py",
+            "tests/test_lowlevel.py",
+            "tests/test_requests.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does requests verify ssl certificates",
+          "recall": 1.0,
+          "hit_files": [
+            "src/requests/adapters.py",
+            "src/requests/sessions.py",
+            "tests/test_requests.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does requests pick up proxy settings from the environment",
+          "recall": 1.0,
+          "hit_files": [
+            "src/requests/sessions.py",
+            "src/requests/utils.py",
+            "tests/conftest.py",
+            "tests/test_requests.py",
+            "tests/test_utils.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does iter_content stream large downloads",
+          "recall": 1.0,
+          "hit_files": [
+            "src/requests/models.py",
+            "src/requests/utils.py",
+            "tests/testserver/server.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does requests encode form data in urls",
+          "recall": 1.0,
+          "hit_files": [
+            "src/requests/api.py",
+            "src/requests/models.py",
+            "src/requests/sessions.py",
+            "tests/test_requests.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does requests guess a response's encoding",
+          "recall": 1.0,
+          "hit_files": [
+            "src/requests/models.py",
+            "src/requests/utils.py",
+            "tests/test_requests.py",
+            "tests/test_utils.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does requests keep track of redirect history",
+          "recall": 0.0,
+          "hit_files": [
+            "src/requests/auth.py",
+            "src/requests/sessions.py",
+            "tests/test_requests.py"
+          ],
+          "missing": [
+            "src/requests/models.py"
+          ]
+        },
+        {
+          "question": "how does requests parse link headers",
+          "recall": 1.0,
+          "hit_files": [
+            "src/requests/__version__.py",
+            "src/requests/_internal_utils.py",
+            "src/requests/api.py",
+            "src/requests/cookies.py",
+            "src/requests/models.py",
+            "src/requests/utils.py",
+            "tests/test_requests.py",
+            "tests/test_utils.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does requests build default headers like user-agent",
+          "recall": 1.0,
+          "hit_files": [
+            "src/requests/__version__.py",
+            "src/requests/_internal_utils.py",
+            "src/requests/adapters.py",
+            "src/requests/api.py",
+            "src/requests/sessions.py",
+            "src/requests/utils.py",
+            "tests/test_requests.py"
+          ],
+          "missing": []
+        },
+        {
+          "question": "how does requests handle case-insensitive response headers",
+          "recall": 1.0,
+          "hit_files": [
+            "src/requests/_types.py",
+            "src/requests/models.py",
+            "src/requests/structures.py",
+            "src/requests/utils.py",
+            "tests/test_requests.py",
+            "tests/test_utils.py"
+          ],
+          "missing": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,164 @@
+@import "tailwindcss";
+
+/* Puppertino ships modular CSS and exposes one subpath per module. Import
+   only the modules a route uses; add more as routes grow rather than pulling
+   in the full bundle. */
+@import "@codedgar/puppertino/colors";
+@import "@codedgar/puppertino/dark-mode";
+@import "@codedgar/puppertino/cards";
+@import "@codedgar/puppertino/buttons";
+@import "@codedgar/puppertino/forms";
+
+/* The palette is dark by design, so the dark values are the defaults
+   rather than an override. Charcoal, not pure black: black makes syntax
+   colours glare and flattens the boundary between chrome and content.
+   A light theme would need its own token pass; there is no half-done
+   one here pretending otherwise. */
+:root {
+  color-scheme: dark;
+
+  /* Sampled from VS Code's dark theme: an editor ground, a slightly
+     lifted surface for panels, and a border only a shade off the
+     surface — visible as a division, not as a drawn line. */
+  --background: #1f1f1f;
+  --foreground: #e6e6e6;
+  --accent: #aec5eb;
+  --surface: #252526;
+  --surface-raised: #2d2d30;
+  --border: #333333;
+  --field: #3c3c3c;
+  --field-text: #e6e6e6;
+  --field-placeholder: #8b8b8b;
+
+  /* Puppertino activates dark mode from a class or a data attribute,
+     never from prefers-color-scheme, so its dark tokens are applied
+     here. Copied from the dark_mode.css we ship so they cannot drift. */
+  --p-btn-border: #454545;
+  --p-btn-def-bg: #262525;
+  --p-btn-def-col: #fcfcfc;
+  --p-btn-dir-col: #e0e0e0;
+  --p-btn-scope-unactive: #e4e4e4;
+  --p-btn-scope-action: #d0d0d0;
+  --p-color-card: #fff;
+  --p-bg-card: #1a1a1a;
+  --p-bd-card: #1d1d1d;
+  --p-suggested-bg: #0e0e0e;
+  --p-suggested-color: #e6e6e6;
+  --route-bg:#040404;
+  --p-modal-bg: rgb(45 45 45 / 85%);
+  --p-modal-bd-color:rgb(224 224 224 / 10%);
+  --p-color-basic-elements: #f5f5f7;
+  --primary-col-ac:#197fff;
+  --p-input-bg: #040404;
+  --p-input-color: #fff;
+  --p-input-color-plac:#414141;
+  --p-input-bd: #454545;
+  --p-modal-fallback-color: rgba(0,0,0,.95);
+  --p-segmented-bg:#0e0e0e;
+  --p-actions-static-color: #dadada;
+  --p-modal-color: #f5f5f7;
+  --p-mobile-tabs-color: #f5f5f7;
+  --p-panel-bg:#212121;
+  --p-btn-border: #454545;
+  --p-btn-def-bg: #262525;
+  --p-btn-def-col: #fcfcfc;
+  --p-btn-dir-col: #e0e0e0;
+  --p-btn-scope-unactive: #e4e4e4;
+  --p-btn-scope-action: #d0d0d0;
+  --p-color-card: #fff;
+  --p-bg-card: #1a1a1a;
+  --p-bd-card: #1d1d1d;
+  --p-suggested-bg: #0e0e0e;
+  --p-suggested-color: #e6e6e6;
+  --route-bg:#040404;
+  --p-modal-bg: rgb(45 45 45 / 85%);
+  --p-modal-bd-color:rgb(224 224 224 / 10%);
+  --p-color-basic-elements: #f5f5f7;
+  --primary-col-ac:#197fff;
+  --p-input-bg: #040404;
+  --p-input-color: #fff;
+  --p-input-color-plac:#414141;
+  --p-input-bd: #454545;
+  --p-modal-fallback-color: rgba(0,0,0,.95);
+  --p-segmented-bg:#0e0e0e;
+  --p-actions-static-color: #dadada;
+  --p-modal-color: #f5f5f7;
+  --p-mobile-tabs-color: #f5f5f7;
+  --p-panel-bg:#212121;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-border: var(--border);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* Text fields. Puppertino's own input fixes a height and a near-black
+   fill, which on this charcoal page reads as a hole and refuses to line
+   up with the button beside it. This sits on the page's own surface and
+   takes its height from its padding, so a field and a button in the same
+   row match without either being nudged. */
+.field {
+  background: var(--field);
+  color: var(--field-text);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 0.65rem 1rem;
+  font-family: inherit;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  width: 100%;
+}
+.field::placeholder {
+  color: color-mix(in srgb, var(--foreground) 40%, transparent);
+}
+.field:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+/* The code pane is the editor ground; panels around it sit a shade
+   above it, which is how VS Code separates editor from sidebar. */
+.code-surface {
+  background-color: var(--background);
+}
+
+/* Shiki emits both theme colours per token: the light colour inline and
+   the dark one as --shiki-dark. The app is dark, so prefer the latter. */
+code span[style*="--shiki-dark"] {
+  color: var(--shiki-dark) !important;
+}
+
+/* The indexing progress bar. <progress> needs explicit styling to look
+   the same across browsers; Puppertino has no progress module. */
+progress {
+  appearance: none;
+  border: none;
+  border-radius: 999px;
+  background-color: color-mix(in srgb, currentColor 15%, transparent);
+  overflow: hidden;
+}
+progress::-webkit-progress-bar {
+  background-color: transparent;
+}
+progress::-webkit-progress-value {
+  background-color: var(--accent);
+  border-radius: 999px;
+  transition: width 200ms ease-out;
+}
+progress::-moz-progress-bar {
+  background-color: var(--accent);
+  border-radius: 999px;
+}

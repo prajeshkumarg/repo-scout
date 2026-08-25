@@ -1,0 +1,9 @@
+# Fixture repos, pinned to a SHA so measurements cannot drift.
+# Questions live in questions/<repo-name>.yml.
+repos:
+  - url: https://github.com/pallets/click
+    sha: 36baa15ff831b939a22bc527cd76ce653ef6f66d
+  - url: https://github.com/pmndrs/zustand
+    sha: b57db4f86ef179285da216eeb291266da82c361c
+  - url: https://github.com/psf/requests
+    sha: dae7ef63b4df6eded86637f251fc4e3a06c3b479
