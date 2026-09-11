@@ -103,3 +103,47 @@ def test_sse_stream_preserves_percent_from_redis(monkeypatch):
     frames = [json.loads(f[len("data: ") :]) for f in asyncio.run(collect())]
     progress = next(f for f in frames if f["type"] == "progress")
     assert progress["percent"] == 17, "percent was dropped between Redis and SSE"
+
+
+def test_silent_stream_emits_heartbeats(monkeypatch):
+    """A quiet stream must keep bytes flowing or proxies cut it.
+
+    Heroku's router gives up after 55s of silence, nginx after 60s by
+    default. Embedding a batch reports nothing until it finishes, and an
+    agent waiting out a rate limit can be quiet for minutes.
+    """
+    import asyncio
+
+    from api import events as events_module
+    from api import indexing
+
+    # Heartbeat immediately rather than making the test wait 20 seconds.
+    monkeypatch.setattr(indexing, "HEARTBEAT_SECONDS", -1)
+
+    class SilentPubSub:
+        def subscribe(self, channel):
+            pass
+
+        def get_message(self, ignore_subscribe_messages, timeout):
+            return None  # nothing ever arrives
+
+        def close(self):
+            pass
+
+    class FakeRedis:
+        def pubsub(self):
+            return SilentPubSub()
+
+    states = iter([("running", None, None, 5), ("done", None, {"stage_ms": {}}, 0)])
+    monkeypatch.setattr(indexing, "get_redis", lambda: FakeRedis())
+    monkeypatch.setattr(indexing, "_run_state", lambda run_id: next(states))
+
+    async def collect():
+        return [frame async for frame in indexing._events(1)]
+
+    frames = asyncio.run(collect())
+
+    assert events_module.heartbeat() in frames, "a silent stream sent nothing"
+    # The heartbeat is a comment, so a client parsing data: lines ignores it.
+    assert events_module.heartbeat().startswith(":")
+    assert any('"type": "done"' in f for f in frames)

@@ -18,6 +18,7 @@ import json
 import logging
 import queue
 import threading
+import time
 from collections.abc import AsyncIterator
 
 import psycopg
@@ -30,7 +31,17 @@ from agent.citations import CITATION_PATTERN, Validation
 from agent.llm import GeminiClient
 from agent.loop import AgentRun, StepRecord
 from agent.runs import record_run
-from api.events import Citation, Done, ErrorEvent, StepResult, StepStart, Token, sse
+from api.events import (
+    HEARTBEAT_SECONDS,
+    Citation,
+    Done,
+    ErrorEvent,
+    StepResult,
+    StepStart,
+    Token,
+    heartbeat,
+    sse,
+)
 from config import get_settings
 from db.conn import connect
 from db.schema import ensure_schema
@@ -174,6 +185,7 @@ async def _agent_events(
     thread.start()
 
     step_number = 0
+    last_sent = time.monotonic()
     try:
         while True:
             if await request.is_disconnected():
@@ -183,8 +195,14 @@ async def _agent_events(
             try:
                 kind, payload = events.get(timeout=DRAIN_TIMEOUT)
             except queue.Empty:
+                # A tool call waiting out a rate limit can leave the
+                # stream silent for minutes; proxies cut that as dead.
+                if time.monotonic() - last_sent > HEARTBEAT_SECONDS:
+                    last_sent = time.monotonic()
+                    yield heartbeat()
                 await asyncio.sleep(0)
                 continue
+            last_sent = time.monotonic()
             if kind == "step":
                 step_number += 1
                 yield sse(

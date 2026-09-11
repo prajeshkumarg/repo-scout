@@ -17,7 +17,14 @@ from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
-from api.events import Done, ErrorEvent, Progress, sse
+from api.events import (
+    HEARTBEAT_SECONDS,
+    Done,
+    ErrorEvent,
+    Progress,
+    heartbeat,
+    sse,
+)
 from db.conn import connect
 from db.schema import ensure_schema
 from ingest.clone import parse_github_url
@@ -93,6 +100,7 @@ async def _events(run_id: int) -> AsyncIterator[str]:
     pubsub = get_redis().pubsub()
     pubsub.subscribe(progress_channel(run_id))
     started = time.monotonic()
+    last_sent = time.monotonic()
     try:
         while True:
             if time.monotonic() - started > STREAM_TIMEOUT_SECONDS:
@@ -111,7 +119,14 @@ async def _events(run_id: int) -> AsyncIterator[str]:
                 ignore_subscribe_messages=True,
                 timeout=POLL_SECONDS,
             )
+            if time.monotonic() - last_sent > HEARTBEAT_SECONDS:
+                # Embedding a batch reports nothing until it finishes, so
+                # without this a proxy would cut the connection mid-run.
+                last_sent = time.monotonic()
+                yield heartbeat()
+
             if message is not None:
+                last_sent = time.monotonic()
                 payload = json.loads(message["data"])
                 yield sse(
                     Progress(

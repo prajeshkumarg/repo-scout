@@ -80,3 +80,17 @@ Event = StepStart | StepResult | Token | Citation | Done | Progress | ErrorEvent
 def sse(event: BaseModel) -> str:
     """Serialize one event as an SSE `data:` frame."""
     return f"data: {json.dumps(event.model_dump())}\n\n"
+
+
+# A stream can legitimately go quiet for a long time: the agent may be
+# waiting out a rate limit, and embedding a large batch reports nothing
+# until it finishes. Proxies read that silence as a dead connection and
+# cut it — Heroku's router at 55s, nginx at 60s by default, Cloudflare
+# around 100s. A comment frame keeps bytes flowing without appearing as
+# an event to the client, which ignores lines beginning with a colon.
+HEARTBEAT_SECONDS = 20.0
+
+
+def heartbeat() -> str:
+    """An SSE comment: keeps the connection alive, carries no event."""
+    return ": keepalive\n\n"
