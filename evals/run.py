@@ -25,6 +25,7 @@ import yaml  # noqa: E402
 
 from config import get_settings  # noqa: E402
 from db.conn import connect  # noqa: E402
+from db.schema import ensure_schema  # noqa: E402
 from embedding import LocalEmbedder  # noqa: E402
 from ingest.clone import parse_github_url  # noqa: E402
 from ingest.pipeline import run as index_repo  # noqa: E402
@@ -248,6 +249,11 @@ def main() -> None:
 
     repo_results = []
     with connect() as conn:
+        # CI runs against a database created seconds ago, so the first
+        # query here is the first thing to touch it. Nothing else in this
+        # path creates the schema: indexing does, and that comes later.
+        conn.autocommit = True
+        ensure_schema(conn)
         for repo in load_fixtures():
             if args.repo and repo.name != args.repo:
                 continue

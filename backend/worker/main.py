@@ -20,6 +20,8 @@ if sys.platform == "darwin" and os.environ.get(_FORK_SAFETY) != "YES":
 
 from rq import Worker  # noqa: E402
 
+from db.conn import connect  # noqa: E402
+from db.schema import ensure_schema  # noqa: E402
 from worker.queue import INDEXING_QUEUE, get_redis  # noqa: E402
 
 logger = logging.getLogger(__name__)
@@ -31,6 +33,11 @@ def main() -> None:
         level=logging.INFO,
         format="%(asctime)s %(levelname)s %(name)s %(message)s",
     )
+    # A worker can be the first thing to touch a new database.
+    with connect() as conn:
+        conn.autocommit = True
+        ensure_schema(conn)
+
     connection = get_redis()
     logger.info("worker starting, listening on queue %r", INDEXING_QUEUE)
     worker = Worker([INDEXING_QUEUE], connection=connection)

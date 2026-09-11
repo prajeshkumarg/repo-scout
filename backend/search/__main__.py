@@ -61,6 +61,8 @@ def _fast_mode(args: argparse.Namespace, settings: Settings) -> None:
     )
     query_vector = embedder.embed_query(args.query)
     with connect() as conn:
+        conn.autocommit = True
+        ensure_schema(conn)
         hits = hybrid_search(conn, args.query, query_vector, k=args.k)
 
     if not hits:
