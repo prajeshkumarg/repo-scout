@@ -26,6 +26,13 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # Records a deployment against this URL, so the repo sidebar and the
+    # Environments tab link to the running site and show which commit is
+    # on it. Nothing here gates the deploy; it is bookkeeping GitHub
+    # renders for free.
+    environment:
+      name: production
+      url: https://repo-scout.live
     # workflow_run fires whatever the outcome, including failure.
     if: >-
       github.event_name == 'workflow_dispatch' ||

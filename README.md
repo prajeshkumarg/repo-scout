@@ -1,5 +1,7 @@
 # repo-scout
 
+**Live: [repo-scout.live](https://repo-scout.live)**
+
 Agentic codebase Q&A. Paste a public GitHub repo URL, we index it, a tool-using
 agent answers questions about it with `file:line` citations.
 
