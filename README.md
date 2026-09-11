@@ -30,42 +30,6 @@ and web processes on the host.
 | `make eval` | runs the eval suite against the fixture repos |
 | `make lint` | ruff + tsc |
 
-## Deploying
-
-The whole stack runs on one machine — two cores and 4 GB is enough:
-
-Create `.env.prod` (gitignored) with:
-
-```sh
-POSTGRES_PASSWORD=       # any long random string
-GOOGLE_API_KEY=          # needed to answer questions; indexing works without it
-PUBLIC_WEB_URL=          # e.g. http://<server-ip>:3000
-PUBLIC_API_URL=          # e.g. http://<server-ip>:8000
-```
-
-Then:
-
-```sh
-docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
-```
-
-That builds three images (api, worker, web) and starts them alongside
-Postgres with pgvector and Redis. Only the web and api ports are
-published; the database is reachable only from inside the stack.
-
-The two `PUBLIC_*` URLs are the addresses a **browser** will use, not
-internal service names: `PUBLIC_API_URL` is compiled into the client
-bundle at build time, so changing it means rebuilding the web image.
-`PUBLIC_WEB_URL` becomes the API's allowed CORS origin.
-
-The embedding model is baked into the backend image, so a deploy does
-not begin with a download, and a cold container serves its first request
-without one.
-
-Indexing is CPU-bound. A repo becomes browsable and answerable within
-seconds regardless, but the background embedding pass that sharpens
-search runs at roughly 15 chunks/second per core.
-
 ## Retrieval baseline
 
 Retrieval recall@10, measured by `make eval` over the fixture set

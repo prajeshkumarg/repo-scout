@@ -1,0 +1,85 @@
+# Deploy to the production box over SSH.
+#
+# Runs only after `ci` succeeds on main, so a red build never reaches the
+# server, and by hand from the Actions tab when a deploy needs repeating
+# without a commit.
+#
+# The box keeps its own .env.prod (secrets, and the public URLs the web
+# bundle is built with). That file is gitignored and never travels
+# through this workflow; a deploy only moves code.
+name: deploy
+
+on:
+  workflow_run:
+    workflows: [ci]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+# A second deploy racing the first would interleave two `compose up`
+# runs against one Docker daemon. Queue them instead, and never cancel
+# one midway: a half-built stack is worse than an old one.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # workflow_run fires whatever the outcome, including failure.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+    steps:
+      - name: Open an SSH session to the box
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          HOST: ${{ secrets.DEPLOY_HOST }}
+        run: |
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          if [ -n "$KNOWN_HOSTS" ]; then
+            printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          else
+            # Trust-on-first-use. Pin DEPLOY_KNOWN_HOSTS to close it.
+            ssh-keyscan -H "$HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          fi
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Pull and rebuild
+        env:
+          HOST: ${{ secrets.DEPLOY_HOST }}
+          USER_NAME: ${{ secrets.DEPLOY_USER }}
+          DIR: ${{ secrets.DEPLOY_DIR }}
+        run: |
+          ssh -i ~/.ssh/id_deploy -o ConnectTimeout=15 \
+            "$USER_NAME@$HOST" bash -euo pipefail -s <<EOF
+          cd "${DIR:-repo-scout}"
+          git fetch --prune origin
+          git reset --hard origin/main
+          docker compose --env-file .env.prod -f docker-compose.prod.yml \
+            up -d --build --remove-orphans
+          # Images pile up fast on a small disk; keep only what is in use.
+          docker image prune -f
+          EOF
+
+      - name: Verify the deploy is actually serving
+        env:
+          HEALTH_URL: ${{ secrets.DEPLOY_HEALTH_URL }}
+        run: |
+          if [ -z "$HEALTH_URL" ]; then
+            echo "set DEPLOY_HEALTH_URL (e.g. https://api.example.com/health)"
+            exit 1
+          fi
+          url="$HEALTH_URL"
+          # The stack takes a moment to come back up; fail loudly if it
+          # does not, so a broken deploy is not reported as a green one.
+          for i in $(seq 1 20); do
+            if curl -fsS -m 10 "$url" > /tmp/health.json; then
+              echo "healthy after $((i * 6))s:"; cat /tmp/health.json; exit 0
+            fi
+            sleep 6
+          done
+          echo "health check never passed: $url"; exit 1

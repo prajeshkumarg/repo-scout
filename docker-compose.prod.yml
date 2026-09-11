@@ -4,8 +4,10 @@
 #   cp .env.prod.example .env.prod   # then fill it in
 #   docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
 #
-# Postgres and Redis stay on the internal network; only web and api are
-# published, because nothing outside the box should reach the database.
+# Caddy is the only service exposed to the internet: it terminates TLS
+# for both names and proxies to web and api over the internal network.
+# Postgres, Redis, web and api publish nothing publicly — web and api
+# bind to loopback so they stay reachable on the box for debugging.
 #
 # The project name is explicit so production volumes never collide with
 # the development ones: both files live in this directory, Compose would
@@ -51,7 +53,8 @@ services:
       GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
       ALLOWED_ORIGINS: ${PUBLIC_WEB_URL}
     ports:
-      - "${API_PORT:-8000}:8000"
+      # Loopback: reachable from the box for curl, not from the internet.
+      - "127.0.0.1:${API_PORT:-8000}:8000"
     depends_on:
       postgres: {condition: service_healthy}
       redis: {condition: service_healthy}
@@ -77,11 +80,35 @@ services:
         # visitor's browser uses — not an internal service name.
         NEXT_PUBLIC_API_URL: ${PUBLIC_API_URL}
     ports:
-      - "${WEB_PORT:-3000}:3000"
+      - "127.0.0.1:${WEB_PORT:-3000}:3000"
     depends_on:
+      - api
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2-alpine
+    environment:
+      # Full origins, e.g. https://repo-scout.live. Caddy reads the host
+      # from each to decide which certificate to get.
+      PUBLIC_WEB_URL: ${PUBLIC_WEB_URL:?set PUBLIC_WEB_URL in .env.prod}
+      PUBLIC_API_URL: ${PUBLIC_API_URL:?set PUBLIC_API_URL in .env.prod}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      # Issued certificates. Keep this volume: wiping it forces a
+      # reissue, and Let's Encrypt rate-limits repeated ones per domain.
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - web
       - api
     restart: unless-stopped
 
 volumes:
   postgres_data:
   redis_data:
+  caddy_data:
+  caddy_config:

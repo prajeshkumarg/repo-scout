@@ -22,7 +22,7 @@ from rq import Worker  # noqa: E402
 
 from db.conn import connect  # noqa: E402
 from db.schema import ensure_schema  # noqa: E402
-from worker.queue import INDEXING_QUEUE, get_redis  # noqa: E402
+from worker.queue import EMBEDDING_QUEUE, INDEXING_QUEUE, get_redis  # noqa: E402
 
 logger = logging.getLogger(__name__)
 
@@ -39,8 +39,13 @@ def main() -> None:
         ensure_schema(conn)
 
     connection = get_redis()
-    logger.info("worker starting, listening on queue %r", INDEXING_QUEUE)
-    worker = Worker([INDEXING_QUEUE], connection=connection)
+    # Order is priority: RQ takes the first queue with work, checking
+    # between jobs. Embedding yields after each batch, so a freshly
+    # pasted repo starts cloning one batch later at worst instead of
+    # waiting out another repo's whole vector backlog.
+    queues = [INDEXING_QUEUE, EMBEDDING_QUEUE]
+    logger.info("worker starting, listening on queues %r", queues)
+    worker = Worker(queues, connection=connection)
     worker.work(with_scheduler=True)
 
 

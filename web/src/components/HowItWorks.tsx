@@ -15,8 +15,21 @@ export function HowItWorks() {
     <section className="w-full max-w-3xl px-1" aria-label="How it works">
       <ol className="flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-0">
         {STEPS.map((step, index) => (
-          <li key={step.n} className="flex flex-1 items-start gap-3 sm:flex-col">
+          <li
+            key={step.n}
+            className="flex flex-1 items-start gap-3 sm:flex-col sm:items-center"
+          >
+            {/* A connector on both sides centres the number in its own
+                column, so the row of them is symmetric against the rule
+                above. The outer two are invisible rather than absent:
+                dropping them would pull the first and last number
+                inward and the row would sit off-centre. */}
             <div className="flex items-center gap-3 sm:w-full">
+              <span
+                className={`hidden h-px flex-1 bg-current opacity-20 sm:block
+                  ${index === 0 ? "invisible" : ""}`}
+                aria-hidden="true"
+              />
               <span
                 className="flex h-7 w-7 shrink-0 items-center justify-center
                   rounded-full border border-current text-xs font-semibold
@@ -25,14 +38,13 @@ export function HowItWorks() {
               >
                 {step.n}
               </span>
-              {index < STEPS.length - 1 && (
-                <span
-                  className="hidden h-px flex-1 bg-current opacity-20 sm:block"
-                  aria-hidden="true"
-                />
-              )}
+              <span
+                className={`hidden h-px flex-1 bg-current opacity-20 sm:block
+                  ${index === STEPS.length - 1 ? "invisible" : ""}`}
+                aria-hidden="true"
+              />
             </div>
-            <div className="sm:mt-3 sm:pr-6">
+            <div className="sm:mt-3 sm:px-3 sm:text-center">
               <p className="text-sm font-medium">{step.title}</p>
               <p className="text-sm opacity-60">{step.body}</p>
             </div>

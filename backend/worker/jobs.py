@@ -15,9 +15,15 @@ from db.conn import connect
 from db.schema import ensure_schema
 from ingest.pipeline import embed_pending
 from ingest.pipeline import run as index_repo
-from worker.queue import get_indexing_queue, get_redis
+from worker.queue import get_embedding_queue, get_redis
 
 logger = logging.getLogger(__name__)
+
+# Batches one embed job works through before re-enqueueing itself. This
+# is the granularity at which the worker becomes available to a new
+# repo, so it is deliberately small: the point is a bounded wait, not
+# throughput.
+EMBED_BATCHES_PER_JOB = 1
 
 
 def progress_channel(run_id: int) -> str:
@@ -101,18 +107,24 @@ def index_repo_job(run_id: int, url: str) -> None:
         # The repo is usable now. Vectors are a second job, so nobody
         # waits on the slowest stage before asking a question.
         publish_progress(run_id, "ready", f"{stats.files} files, {stats.chunks} chunks")
-        get_indexing_queue().enqueue(
+        get_embedding_queue().enqueue(
             embed_repo_job,
             run_id,
             stats.owner,
             stats.name,
             stats.sha,
-            job_timeout=24 * 3600,
+            job_timeout=3600,
         )
 
 
 def embed_repo_job(run_id: int, owner: str, name: str, sha: str) -> None:
     """Fill in vectors after the structure pass, upgrading search.
+
+    Embeds a few batches, then re-enqueues itself so the worker can
+    serve a waiting structure pass in between. embed_pending only
+    selects chunks that still lack a vector, so resuming is just the
+    next call: no cursor to carry, and a worker restart costs at most
+    the batch in flight.
 
     Failure here degrades search rather than breaking the repo: lexical
     results keep working, so this logs and gives up instead of marking
@@ -128,8 +140,15 @@ def embed_repo_job(run_id: int, owner: str, name: str, sha: str) -> None:
             on_stage=lambda stage, message, percent: publish_progress(
                 run_id, stage, message, percent
             ),
+            max_batches=EMBED_BATCHES_PER_JOB,
         )
-        publish_progress(run_id, "done", f"{filled} chunks embedded")
+        if filled:
+            get_embedding_queue().enqueue(
+                embed_repo_job, run_id, owner, name, sha, job_timeout=3600
+            )
+            return
+        # Nothing left without a vector: the backlog is clear.
+        publish_progress(run_id, "done", "vectors up to date")
     except Exception as exc:
         logger.exception("embedding %s/%s failed", owner, name)
         publish_progress(run_id, "embed_failed", str(exc))

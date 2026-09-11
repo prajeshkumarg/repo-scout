@@ -197,6 +197,7 @@ def embed_pending(
     sha: str,
     settings: Settings,
     on_stage: Callable[[str, str, int | None], None] | None = None,
+    max_batches: int | None = None,
 ) -> int:
     """Fill in vectors for chunks stored without them.
 
@@ -204,10 +205,32 @@ def embed_pending(
     fully navigable while this works through the backlog. Chunks are
     updated in batches: an interrupted run leaves the finished ones
     embedded rather than starting over.
+
+    `max_batches` caps how many batches one call embeds. The worker uses
+    it to yield between batches, so a newly pasted repo starts its
+    structure pass after the current batch instead of queueing behind a
+    whole repo's vector backlog. Progress counts every chunk of the
+    repo, not just this call's backlog, so it keeps climbing across
+    calls rather than restarting at zero.
     """
     with connect() as conn:
         conn.autocommit = True
         register_vector(conn)
+        # Counted before fetching: chunk content is the bulk of the row,
+        # and a capped call must not drag the whole backlog over the
+        # wire to embed the first batch of it.
+        total, pending = conn.execute(
+            """
+            SELECT count(*), count(*) FILTER (WHERE c.embedding IS NULL)
+            FROM chunks c JOIN repos r ON r.id = c.repo_id
+            WHERE r.owner = %s AND r.name = %s AND c.sha = %s
+            """,
+            (owner, name, sha),
+        ).fetchone()
+        if not pending:
+            return 0
+
+        limit = None if max_batches is None else max_batches * settings.embed_batch_size
         rows = conn.execute(
             """
             SELECT c.id, c.path, c.start_line, c.end_line, c.content
@@ -215,19 +238,26 @@ def embed_pending(
             WHERE r.owner = %s AND r.name = %s AND c.sha = %s
               AND c.embedding IS NULL
             ORDER BY c.id
+            LIMIT %s
             """,
-            (owner, name, sha),
+            (owner, name, sha, limit),
         ).fetchall()
         if not rows:
             return 0
+
+        # Percent is reported against the repo, so a resumed call picks
+        # up where the last one left off instead of restarting at 0%.
+        embedded_before = total - pending
 
         embedder = LocalEmbedder(
             model_name=settings.embedding_model,
             batch_size=settings.embed_batch_size,
         )
-        total = len(rows)
         done = 0
-        for start in range(0, total, settings.embed_batch_size):
+        batches = 0
+        for start in range(0, len(rows), settings.embed_batch_size):
+            if max_batches is not None and batches >= max_batches:
+                break
             batch = rows[start : start + settings.embed_batch_size]
             texts = [
                 embedding_text(
@@ -252,11 +282,13 @@ def embed_pending(
                     ],
                 )
             done += len(batch)
+            batches += 1
             if on_stage is not None:
+                filled = embedded_before + done
                 on_stage(
                     "embed",
-                    f"{done} of {total} chunks embedded",
-                    int(done * 100 / total),
+                    f"{filled} of {total} chunks embedded",
+                    int(filled * 100 / total),
                 )
         logger.info("[embed] filled %d vectors for %s/%s", done, owner, name)
         return done

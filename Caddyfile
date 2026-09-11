@@ -1,0 +1,29 @@
+# TLS termination and routing for the production stack.
+#
+# Caddy obtains and renews Let's Encrypt certificates by itself. It needs
+# exactly two things to succeed: ports 80 and 443 reachable from the
+# internet, and both names resolving to this box. Nothing here holds a
+# key or a secret.
+#
+# The site addresses come from the same two variables the app is built
+# with, so the certificate, the browser's API target and the API's CORS
+# origin cannot drift apart.
+{
+	# No admin API: it would listen on a port nothing here needs.
+	admin off
+}
+
+{$PUBLIC_WEB_URL} {
+	encode gzip
+	reverse_proxy web:3000
+}
+
+{$PUBLIC_API_URL} {
+	# Indexing progress and answers are Server-Sent Events. Caddy buffers
+	# proxied responses by default, which would hold every event until the
+	# run ended and make a working stream look like a hang; -1 flushes
+	# each write straight through.
+	reverse_proxy api:8000 {
+		flush_interval -1
+	}
+}
