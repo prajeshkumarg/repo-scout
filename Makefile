@@ -47,7 +47,11 @@ test:
 lint:
 	cd $(BACKEND) && uv run ruff check .
 	cd $(BACKEND) && uv run ruff format --check .
-	cd $(WEB) && npx tsc --noEmit
+	@# next typegen writes the generated route types (LayoutProps,
+	@# PageProps) the app uses. They live under .next/, which is not
+	@# committed, so a fresh checkout has none and tsc fails on types
+	@# that exist fine on a machine that has run the dev server.
+	cd $(WEB) && npx next typegen && npx tsc --noEmit
 
 # The eval suite is not a unit test: it indexes fixture repos and runs 60
 # retrievals. Baseline comparison happens via --check-regression in CI.
