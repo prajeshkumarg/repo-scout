@@ -23,7 +23,9 @@ ENV NODE_ENV=production
 RUN groupadd --system --gid 1001 nodejs \
     && useradd --system --uid 1001 --gid nodejs nextjs
 
-COPY --from=builder /app/public ./public
+# No public/ directory: this app keeps its only static asset (the
+# favicon) in src/app, and git does not track empty directories, so a
+# clone has nothing to copy even when the working tree looks like it does.
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
