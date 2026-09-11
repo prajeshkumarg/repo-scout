@@ -1,0 +1,47 @@
+# The cheap check, on everything: it catches the ordinary mistakes and
+# finishes in about a minute. The eval suite is a separate workflow,
+# because re-measuring retrieval on a README edit is wasted time.
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: scout
+          POSTGRES_PASSWORD: scout
+          POSTGRES_DB: repo_scout
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U scout -d repo_scout"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - run: uv sync
+        working-directory: backend
+      - run: npm ci
+        working-directory: web
+
+      - name: Tests
+        run: make test
+      - name: Lint
+        run: make lint

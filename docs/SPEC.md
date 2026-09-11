@@ -144,8 +144,14 @@ Two metrics, reported separately:
 - **Answer quality**: LLM-as-judge against a reference answer, plus a hard
   citation-validity check.
 
-`make eval` prints a table and writes JSON to `evals/results/`. Runs in CI on
-every push to main. Regressions in recall are a failing build.
+`make eval` prints a table and writes JSON to `evals/results/`. Regressions in
+recall are a failing build.
+
+CI runs it when retrieval could have moved -- chunking, ingest, tools,
+embedding, config, schema, or the fixtures themselves -- and on demand from the
+Actions tab. Not on every push: a full run re-indexes every fixture and takes
+around twenty minutes, which proves nothing after a README edit. Tests and lint
+are the check that runs on everything.
 
 ## Non-goals
 

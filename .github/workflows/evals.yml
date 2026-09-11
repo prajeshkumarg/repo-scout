@@ -1,8 +1,22 @@
 name: evals
 
+# Only when retrieval could actually have changed. Re-measuring recall
+# after a README edit costs twenty minutes and proves nothing; the code
+# below is the code that can move the number. Also runnable by hand from
+# the Actions tab when you want the number for its own sake.
 on:
+  workflow_dispatch:
   push:
     branches: [main]
+    paths:
+      - "backend/chunking/**"
+      - "backend/ingest/**"
+      - "backend/tools/**"
+      - "backend/embedding.py"
+      - "backend/config.py"
+      - "backend/db/schema.py"
+      - "evals/**"
+      - ".github/workflows/evals.yml"
 
 jobs:
   evals:

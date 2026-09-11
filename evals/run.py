@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 import sys
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -237,6 +238,10 @@ def main() -> None:
         help="only evaluate the first N questions per repo (quota control)",
     )
     args = parser.parse_args()
+
+    # Without this the pipeline's progress goes nowhere and a CI run
+    # sits silent for the whole indexing pass, which reads as a hang.
+    logging.basicConfig(level=logging.INFO, format="%(message)s")
 
     settings = get_settings()
     embedder = LocalEmbedder(
